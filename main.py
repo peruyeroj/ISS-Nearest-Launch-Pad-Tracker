@@ -46,3 +46,10 @@ multi_point = MultiPoint(points)
 
 nearestLaunchSite = nearest_points(issLocation, multi_point)
 print(f"Closest Launch Pad coordinates to ISS location: {nearestLaunchSite[1]}")
+
+nearLatitude = nearestLaunchSite[1].x
+nearLongitude = nearestLaunchSite[1].y
+
+for site, coordinates in launchSites.items():
+    if coordinates["latitude"] == nearLatitude and coordinates["longitude"] == nearLongitude:
+        print(f"Matching coordinates found for {site}: Latitude {nearLatitude}, Longitude {nearLongitude}")
