@@ -5,6 +5,8 @@ from shapely.ops import nearest_points
 import math
 import numpy as np
 from geopy import distance 
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def main():
 
@@ -61,6 +63,7 @@ def main():
     for site, coordinates in launch_sites.items():
         if coordinates["latitude"] == launch_latitude and coordinates["longitude"] == launch_longitude:
             print(f"Matching coordinates found for {site}: Latitude {launch_latitude}, Longitude {launch_longitude}")
+            launch_site_name = site
             launch_site_altitude = launch_sites[site]["altitude"]
             print(f"The launch altitude is {launch_site_altitude}")
 
@@ -74,6 +77,30 @@ def main():
     distance_3d = math.sqrt(distance_2d ** 2 + (iss_altitude - launch_site_altitude) ** 2)
 
     print(distance_3d)
+
+    # Create a 3D scatter plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Plot ISS location
+    ax.scatter(iss_longitude, iss_latitude, iss_altitude, color='red', label='ISS')
+
+    # Plot nearest launch pad location
+    ax.scatter(launch_longitude, launch_latitude, launch_site_altitude, color='blue', label=f"{launch_site_name}(Nearet Active Launch Pad)")
+
+    ax.set_xlabel('Longitude')
+    ax.set_ylabel('Latitude')
+    ax.set_zlabel('Altitude (m)')
+    ax.legend()
+    
+    # Show the plot
+    # Add a line connecting the two points
+    ax.plot([iss_longitude, launch_longitude], [iss_latitude, launch_latitude], [iss_altitude, launch_site_altitude], 'k--')
+
+    # Add a label for the distance
+    ax.text((iss_longitude + launch_longitude) / 2, (iss_latitude + launch_latitude) / 2, (iss_altitude + launch_site_altitude) / 2, f'Euclidean Distance: {distance_3d:.2f} meters', fontsize=10, color='k')
+
+    plt.show()
 
 if __name__  == "__main__":
     main()
